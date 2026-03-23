@@ -1,0 +1,48 @@
+{
+  "intents": [
+    {
+      "tag": "greeting",
+      "patterns": ["hi", "hello", "hey", "good morning", "good evening"],
+      "responses": ["Hello! Welcome to Pulse Gym 💪. How can I help you today?"]
+    },
+    {
+      "tag": "hours",
+      "patterns": ["what are your timings?", "gym open hours", "when do you open?", "when do you close?"],
+      "responses": ["We are open from 6 AM to 10 PM every day."]
+    },
+    {
+      "tag": "membership",
+      "patterns": ["membership plans", "pricing", "how much for membership?", "subscription cost?"],
+      "responses": [
+        "We have the following plans:\n- Basic: ₹1000/month\n- Standard: ₹1500/month\n- Premium: ₹2500/month"
+      ]
+    },
+    {
+      "tag": "classes",
+      "patterns": ["what classes are available?", "do you have yoga?", "group classes?", "personal training?"],
+      "responses": [
+        "We offer Yoga, Zumba, CrossFit, and Personal Training sessions."
+      ]
+    },
+    {
+      "tag": "trainers",
+      "patterns": ["who are the trainers?", "expert trainers?", "coach details?"],
+      "responses": ["Our certified trainers are available for all sessions. You can ask for a personal trainer anytime."]
+    },
+    {
+      "tag": "location",
+      "patterns": ["where are you located?", "address?", "gym location?"],
+      "responses": ["We are located at 123 Fitness Street, Downtown, City."]
+    },
+    {
+      "tag": "thank_you",
+      "patterns": ["thanks", "thank you", "thank you so much", "thanks a lot"],
+      "responses": ["You’re welcome! 💪"]
+    },
+    {
+      "tag": "interest",
+      "patterns": ["i want to join", "interested", "sounds good", "want membership", "i like this gym"],
+      "responses": ["Great! Can I have your name to get started?"]
+    }
+  ]
+}

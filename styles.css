@@ -1,0 +1,57 @@
+* { margin:0; padding:0; box-sizing:border-box; font-family:'Roboto',sans-serif; }
+
+body {
+  background:#121212; display:flex; justify-content:center; align-items:center; height:100vh;
+}
+
+#chat-container {
+  width:420px; max-width:100%; height:500px; /* fixed height */
+  background:#1e1e1e; border-radius:20px; overflow:hidden;
+  display:flex; flex-direction:column; box-shadow:0 15px 40px rgba(0,0,0,0.5);
+}
+
+#chat-messages {
+  background:#f1f1f1; flex:1; padding:15px; overflow-y:auto; display:flex; flex-direction:column; gap:8px;
+  min-height:0; /* important for flex scroll */
+}
+
+#chat-messages::-webkit-scrollbar { width:6px; }
+#chat-messages::-webkit-scrollbar-thumb { background:#ff6b35; border-radius:3px; }
+#chat-messages::-webkit-scrollbar-track { background:#eee; border-radius:3px; }
+#chat-header {
+  background: linear-gradient(90deg,#ff6b35,#ff3d00);
+  padding:15px; display:flex; align-items:center; gap:10px; color:#fff;
+}
+
+#logo { width:40px; height:40px; border-radius:50%; background:#fff; display:flex; justify-content:center; align-items:center; color:#ff3d00; font-size:20px; }
+
+#chat-header h2 { font-size:18px; }
+
+
+
+.user, .bot {
+  max-width:70%; padding:10px 14px; border-radius:15px; word-wrap:break-word; opacity:0;
+}
+
+.user { background:#4FD1C5; color:#fff; align-self:flex-end; animation:fadeSlide 0.5s forwards; }
+.bot { background:#fff; color:#2d3436; align-self:flex-start; animation:fadeSlide 0.5s forwards; }
+
+.pulse { animation:fadeSlide 0.5s forwards, pulse 1.2s infinite alternate; }
+
+.typing { font-style:italic; color:#999; margin:4px 0; }
+
+#chat-input-area { display:flex; padding:10px; background:#2c2c2c; gap:5px; }
+#chat-input { flex:1; padding:10px; border-radius:15px; border:none; outline:none; font-size:16px; }
+#send-btn, #refresh-btn { padding:10px 15px; border:none; border-radius:15px; cursor:pointer; font-weight:bold; transition:0.3s; color:#fff; }
+#send-btn { background:#00b894; }
+#refresh-btn { background:#d63031; }
+#send-btn:hover, #refresh-btn:hover { transform:translateY(-2px); }
+
+@keyframes fadeSlide { from {opacity:0; transform:translateY(10px);} to {opacity:1; transform:translateY(0);} }
+
+@keyframes pulse { from {transform:scale(1);} to {transform:scale(1.03);} }
+
+/* Scrollbar */
+#chat-messages::-webkit-scrollbar { width:6px; }
+#chat-messages::-webkit-scrollbar-thumb { background:#ff6b35; border-radius:3px; }
+#chat-messages::-webkit-scrollbar-track { background:#eee; border-radius:3px; }

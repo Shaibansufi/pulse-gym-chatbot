@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pulse Gym Assistant</title>
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<div id="chat-container">
+  <div id="chat-header">
+    <div id="logo">💪</div>
+    <h2>Pulse Gym Assistant</h2>
+  </div>
+  <div id="chat-messages"></div>
+  <div id="chat-input-area">
+    <input type="text" id="chat-input" placeholder="Ask me anything about Pulse Gym...">
+    <button id="send-btn">Send</button>
+    <button id="refresh-btn">Refresh</button>
+  </div>
+</div>
+
+<script>
+const chatMessages = document.getElementById('chat-messages');
+const chatInput = document.getElementById('chat-input');
+const sendBtn = document.getElementById('send-btn');
+const refreshBtn = document.getElementById('refresh-btn');
+
+// Typing animation
+function typeMessage(msg, className) {
+  return new Promise(resolve => {
+    const lines = msg.split("\n");
+    lines.forEach((line, index) => {
+      setTimeout(() => {
+        const div = document.createElement('div');
+        div.className = className + (className==='bot' ? ' pulse' : '');
+        div.textContent = line;
+        div.style.opacity = 0;
+        chatMessages.appendChild(div);
+        div.style.animation = "fadeSlide 0.5s forwards";
+        chatMessages.scrollTop = chatMessages.scrollHeight;
+        if(index === lines.length-1) resolve();
+      }, index * 400);
+    });
+  });
+}
+
+// Append user message
+function appendMessage(msg, className) {
+  const div = document.createElement('div');
+  div.className = className;
+  div.textContent = msg;
+  chatMessages.appendChild(div);
+  chatMessages.scrollTop = chatMessages.scrollHeight;
+}
+
+// Emoji enhancer
+function addEmoji(response){
+  const emojiMap = {
+    "timings":"⏰",
+    "membership":"💳",
+    "classes":"🏋️‍♂️",
+    "trainers":"👨‍🏫",
+    "location":"📍",
+    "thanks":"🙏",
+    "welcome":"💪🔥"
+  };
+  for(let key in emojiMap){
+    if(response.toLowerCase().includes(key)){
+      response += " " + emojiMap[key];
+      break;
+    }
+  }
+  return response;
+}
+
+// Send message
+async function sendMessage(){
+  let msg = chatInput.value.trim();
+  if(!msg) return;
+  appendMessage(msg,'user');
+  chatInput.value = '';
+
+  const typing = document.createElement('div');
+  typing.className = 'typing';
+  typing.textContent = 'Bot is typing';
+  chatMessages.appendChild(typing);
+
+  let dots = 0;
+  const dotInterval = setInterval(()=>{
+    typing.textContent = 'Bot is typing' + '.'.repeat(dots % 4);
+    dots++;
+  },500);
+
+  try{
+    const res = await fetch('http://127.0.0.1:5000/chat',{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({message: msg})
+    });
+    const data = await res.json();
+    clearInterval(dotInterval);
+    typing.remove();
+    const emojiResp = addEmoji(data.response);
+    await typeMessage(emojiResp,'bot');
+    saveChat();
+  } catch {
+    clearInterval(dotInterval);
+    typing.remove();
+    await typeMessage("Sorry, I'm having trouble responding right now. 😔",'bot');
+  }
+}
+
+// Save/load chat
+function saveChat(){ localStorage.setItem('chatHistory',chatMessages.innerHTML); }
+function loadChat(){ 
+  const saved = localStorage.getItem('chatHistory');
+  if(saved) chatMessages.innerHTML = saved;
+}
+
+// Refresh
+function refreshChat(){
+  localStorage.removeItem('chatHistory');
+  chatMessages.innerHTML='';
+  typeMessage("Welcome to Pulse Gym! 💪🔥\nI can help you with timings, classes, memberships, trainers, and more.\nHow can I assist you today?",'bot');
+}
+
+// Event listeners
+sendBtn.addEventListener('click',sendMessage);
+chatInput.addEventListener('keypress', e=>{ if(e.key==='Enter') sendMessage(); });
+refreshBtn.addEventListener('click',refreshChat);
+
+// On load
+window.onload = ()=>{
+  loadChat();
+  if(!localStorage.getItem('chatHistory')){
+    typeMessage("Welcome to Pulse Gym! 💪🔥\nI can help you with timings, classes, memberships, trainers, and more.\nHow can I assist you today?",'bot');
+  }
+};
+</script>
+</body>
+</html>
