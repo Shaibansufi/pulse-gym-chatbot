@@ -3,7 +3,7 @@ from flask_cors import CORS
 import json, random, csv, string
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.metrics.pairwise import cosine_similarity
-
+import os
 app = Flask(__name__)
 CORS(app)
 
@@ -48,6 +48,12 @@ def send_followup(reply, lead_completed=False):
     else:
         followup = " Is there anything else I can help you with? 💪"
     return reply + followup
+
+
+# Your routes here
+@app.route("/")
+def home():
+    return "Pulse Gym Chatbot Backend Running!"
 
 @app.route("/chat", methods=["POST"])
 def chat():
@@ -110,4 +116,5 @@ def chat():
     return jsonify({"response": send_followup(reply)})
 
 if __name__ == "__main__":
-    app.run(debug=True)
+    port = int(os.environ.get("PORT", 5000))  # Use Render PORT or default 5000 for local testing
+    app.run(host="0.0.0.0", port=port)
