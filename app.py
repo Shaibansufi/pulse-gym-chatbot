@@ -30,7 +30,7 @@ def save_lead(name, email):
         creds = ServiceAccountCredentials.from_json_keyfile_dict(creds_dict, scope)
         client = gspread.authorize(creds)
 
-        sheet = client.open("Leads").sheet1
+        sheet = client.open_by_key("1a0INWDWyTGb1XXQcx4lYzCvO8tp8blX3bI8LcbR7dTA").sheet1
         sheet.append_row([name, email])
 
         print("SUCCESS: Saved to Google Sheets")
