@@ -14,26 +14,30 @@ user_state = {}
 
 def save_lead(name, email):
     try:
+        print("Attempting to save:", name, email)
+
+        creds_json = os.environ.get("GOOGLE_CREDENTIALS")
+        print("ENV Loaded:", bool(creds_json))
+
+        creds_dict = json.loads(creds_json)
+
         scope = [
             "https://spreadsheets.google.com/feeds",
             "https://www.googleapis.com/auth/drive"
         ]
 
-        creds = ServiceAccountCredentials.from_json_keyfile_name(
-            "credentials.json", scope
-        )
-
+        creds = ServiceAccountCredentials.from_json_keyfile_dict(creds_dict, scope)
         client = gspread.authorize(creds)
 
         sheet = client.open("Leads").sheet1
-
         sheet.append_row([name, email])
 
-        print("Saved to Google Sheets:", name, email)
+        print("SUCCESS: Saved to Google Sheets")
 
     except Exception as e:
-        print("Error saving to Google Sheets:", e)
+        print("ERROR:", e)
 
+        
 @app.route("/")
 def home():
     return "Pulse Gym AI Backend Running 💪"
