@@ -53,12 +53,10 @@ def save_lead(name, email):
 
         sheet.append_row([name, email])
 
-        return True
+        return "✅ SUCCESS"
 
     except Exception as e:
-        print("❌ ERROR saving lead:", str(e))
-        return False
-
+        return f"❌ ERROR: {str(e)}"
 # ---------------------------
 # Intent Matching
 # ---------------------------
@@ -82,6 +80,11 @@ def home():
 # 🔥 Test Google Sheets directly
 @app.route("/test")
 def test():
+    try:
+        result = save_lead("Test User", "test@gmail.com")
+        return f"Result: {result}"
+    except Exception as e:
+        return f"❌ ERROR: {str(e)}"
     try:
         success = save_lead("Test User", "test@gmail.com")
         if success:
