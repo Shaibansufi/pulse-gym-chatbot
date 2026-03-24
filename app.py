@@ -2,6 +2,8 @@ import os
 from flask import Flask, request, jsonify
 from flask_cors import CORS
 import csv
+import gspread
+from oauth2client.service_account import ServiceAccountCredentials
 
 app = Flask(__name__)
 CORS(app)
@@ -9,14 +11,28 @@ CORS(app)
 # Store user state (simple session)
 user_state = {}
 
-# Save leads to CSV
+
 def save_lead(name, email):
-    file_exists = os.path.isfile("leads.csv")
-    with open("leads.csv", "a", newline="") as file:
-        writer = csv.writer(file)
-        if not file_exists:
-            writer.writerow(["Name", "Email"])
-        writer.writerow([name, email])
+    try:
+        scope = [
+            "https://spreadsheets.google.com/feeds",
+            "https://www.googleapis.com/auth/drive"
+        ]
+
+        creds = ServiceAccountCredentials.from_json_keyfile_name(
+            "credentials.json", scope
+        )
+
+        client = gspread.authorize(creds)
+
+        sheet = client.open("Leads").sheet1
+
+        sheet.append_row([name, email])
+
+        print("Saved to Google Sheets:", name, email)
+
+    except Exception as e:
+        print("Error saving to Google Sheets:", e)
 
 @app.route("/")
 def home():
