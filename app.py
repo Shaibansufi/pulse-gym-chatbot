@@ -15,20 +15,20 @@ user_state = {}
 
 def save_lead(name, email):
     try:
-        print("Attempting to save:", name, email)
+        print("🚀 Attempting to save:", name, email)
 
         creds_json = os.environ.get("GOOGLE_CREDENTIALS")
 
         if not creds_json:
             raise Exception("Missing GOOGLE_CREDENTIALS")
 
-        # 🔥 CRITICAL FIX
+        print("✅ ENV Loaded")
+
         creds_json = creds_json.replace('\n', '\\n')
-
         creds_dict = json.loads(creds_json)
-
-        # 🔥 FIX PRIVATE KEY
         creds_dict["private_key"] = creds_dict["private_key"].replace("\\n", "\n")
+
+        print("✅ Credentials parsed")
 
         scope = [
             "https://spreadsheets.google.com/feeds",
@@ -38,15 +38,27 @@ def save_lead(name, email):
         creds = ServiceAccountCredentials.from_json_keyfile_dict(creds_dict, scope)
         client = gspread.authorize(creds)
 
-        sheet = client.open_by_key("1a0INWDWyTGb1XXQcx4lYzCvO8tp8blX3bI8LcbR7dTA").worksheet("Sheet1")
+        print("✅ Authorized gspread")
 
+        # 🔥 STEP 1: Open sheet
+        spreadsheet = client.open_by_key("1a0INWDWyTGb1XXQcx4lYzCvO8tp8blX3bI8LcbR7dTA")
+        print("✅ Spreadsheet opened:", spreadsheet.title)
+
+        # 🔥 STEP 2: List all worksheets
+        worksheets = spreadsheet.worksheets()
+        print("📄 Available sheets:", [ws.title for ws in worksheets])
+
+        # 🔥 STEP 3: Use correct sheet
+        sheet = spreadsheet.sheet1
+        print("✅ Using sheet:", sheet.title)
+
+        # 🔥 STEP 4: Append
         sheet.append_row([name, email])
 
-        print("✅ SUCCESS")
+        print("🎉 SUCCESS: Row added")
 
     except Exception as e:
         print("❌ ERROR:", str(e))
-
 
 @app.route("/")
 def home():
