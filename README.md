@@ -23,13 +23,14 @@ A fast, lightweight AI chatbot that helps businesses automatically answer custom
 > Place your screenshots inside the `demo/` folder in your repo.
 
 ### 🟢 Chat Interface
-![Chat UI](demo/chat-ui.png)
+![Chat UI](demo/Introduction.png)
 
 ### 🟢 Bot Responses
-![Bot Response](demo/bot-response.png)
+![Bot Response](demo/Timming.png)
+![Bot Response](demo/Membership.png)
 
 ### 🟢 Lead Capture
-![Lead Capture](demo/lead-capture.png)
+![Lead Capture](demo/Leads.png)
 
 ---
 
