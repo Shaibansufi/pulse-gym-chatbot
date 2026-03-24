@@ -117,6 +117,10 @@ def chat():
         return jsonify({
             "response": "I can help you with timings ⏰, membership 💳, trainers 🏋️‍♂️, or joining.\nWhat would you like to know? 💪"
         })
+@app.route("/test")
+def test():
+    save_lead("Test User", "test@gmail.com")
+    return "Check your Google Sheet"
 
 # Run for Render + Local
 if __name__ == "__main__":
