@@ -18,9 +18,13 @@ def save_lead(name, email):
         print("Attempting to save:", name, email)
 
         creds_json = os.environ.get("GOOGLE_CREDENTIALS")
-        print("ENV Loaded:", bool(creds_json))
 
+        if not creds_json:
+            raise Exception("ENV variable missing")
+
+        # Fix JSON formatting
         creds_dict = json.loads(creds_json)
+        creds_dict["private_key"] = creds_dict["private_key"].replace("\\n", "\n")
 
         scope = [
             "https://spreadsheets.google.com/feeds",
@@ -30,14 +34,14 @@ def save_lead(name, email):
         creds = ServiceAccountCredentials.from_json_keyfile_dict(creds_dict, scope)
         client = gspread.authorize(creds)
 
-        sheet = client.open_by_key("1a0INWDWyTGb1XXQcx4lYzCvO8tp8blX3bI8LcbR7dTA").sheet1
+        sheet = client.open_by_key("1a0INWDWyTGb1XXQcx4lYzCvO8tp8blX3bI8LcbR7dTA").worksheet("Sheet1")
+
         sheet.append_row([name, email])
 
-        print("SUCCESS: Saved to Google Sheets")
+        print("✅ SUCCESS: Lead saved")
 
     except Exception as e:
-        print("ERROR:", e)
-
+        print("❌ ERROR:", str(e))
         
 @app.route("/")
 def home():
