@@ -25,8 +25,10 @@ A fast, lightweight AI chatbot that helps businesses automatically answer custom
 ### 🟢 Chat Interface
 ![Chat UI](Demo/Introduction.png)
 
-### 🟢 Bot Responses
+### 🟢 Bot Response For Timming
 ![Bot Response](Demo/Timming.png)
+
+### 🟢 Bot Responses For Membership
 ![Bot Response](Demo/Membership.png)
 
 ### 🟢 Lead Capture
