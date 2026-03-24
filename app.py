@@ -20,10 +20,14 @@ def save_lead(name, email):
         creds_json = os.environ.get("GOOGLE_CREDENTIALS")
 
         if not creds_json:
-            raise Exception("ENV variable missing")
+            raise Exception("Missing GOOGLE_CREDENTIALS")
 
-        # Fix JSON formatting
+        # 🔥 CRITICAL FIX
+        creds_json = creds_json.replace('\n', '\\n')
+
         creds_dict = json.loads(creds_json)
+
+        # 🔥 FIX PRIVATE KEY
         creds_dict["private_key"] = creds_dict["private_key"].replace("\\n", "\n")
 
         scope = [
@@ -38,14 +42,25 @@ def save_lead(name, email):
 
         sheet.append_row([name, email])
 
-        print("✅ SUCCESS: Lead saved")
+        print("✅ SUCCESS")
 
     except Exception as e:
         print("❌ ERROR:", str(e))
-        
+
+
 @app.route("/")
 def home():
     return "Pulse Gym AI Backend Running 💪"
+
+
+@app.route("/test")
+def test():
+    try:
+        save_lead("Debug User", "debug@gmail.com")
+        return "✅ Test completed - check sheet"
+    except Exception as e:
+        return f"❌ Error: {str(e)}"
+
 
 @app.route("/chat", methods=["POST"])
 def chat():
@@ -117,10 +132,6 @@ def chat():
         return jsonify({
             "response": "I can help you with timings ⏰, membership 💳, trainers 🏋️‍♂️, or joining.\nWhat would you like to know? 💪"
         })
-@app.route("/test")
-def test():
-    save_lead("Test User", "test@gmail.com")
-    return "Check your Google Sheet"
 
 # Run for Render + Local
 if __name__ == "__main__":
