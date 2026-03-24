@@ -1,6 +1,5 @@
-flask
-flask-cors
-scikit-learn
-pandas
-gspread
-oauth2client
+Flask==3.0.0
+flask-cors==4.0.0
+gspread==6.0.0
+google-auth==2.29.0
+gunicorn==21.2.0
