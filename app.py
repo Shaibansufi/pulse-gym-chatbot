@@ -4,8 +4,8 @@ from flask import Flask, request, jsonify
 from flask_cors import CORS
 import csv
 import gspread
-from oauth2client.service_account import ServiceAccountCredentials
-
+import gspread
+from google.oauth2.service_account import Credentials  # 🔥
 app = Flask(__name__)
 CORS(app)
 
@@ -29,9 +29,6 @@ def save_lead(name, email):
         creds_dict["private_key"] = creds_dict["private_key"].replace("\\n", "\n")
 
         print("✅ Credentials parsed")
-
-        import gspread
-        from google.oauth2.service_account import Credentials  # 🔥 NEW (better than oauth2client)
 
         scope = [
             "https://www.googleapis.com/auth/spreadsheets",
@@ -67,13 +64,37 @@ def home():
 
 @app.route("/test")
 def test():
-    print("🔥 TEST ROUTE HIT")
+    try:
+        creds_json = os.environ.get("GOOGLE_CREDENTIALS")
 
-    save_lead("Debug User", "debug@gmail.com")
+        if not creds_json:
+            return "❌ ENV NOT FOUND"
 
-    print("🔥 AFTER SAVE_LEAD")
+        creds_json = creds_json.replace('\n', '\\n')
+        creds_dict = json.loads(creds_json)
+        creds_dict["private_key"] = creds_dict["private_key"].replace("\\n", "\n")
 
-    return "DONE"
+        import gspread
+        from google.oauth2.service_account import Credentials
+
+        scope = [
+            "https://www.googleapis.com/auth/spreadsheets",
+            "https://www.googleapis.com/auth/drive"
+        ]
+
+        creds = Credentials.from_service_account_info(creds_dict, scopes=scope)
+        client = gspread.authorize(creds)
+
+        spreadsheet = client.open_by_key("1a0INWDWyTGb1XXQcx4lYzCvO8tp8blX3bI8LcbR7dTA")
+
+        sheet = spreadsheet.sheet1
+
+        sheet.append_row(["TestUser", "test@gmail.com"])
+
+        return "✅ SUCCESS: Data written"
+
+    except Exception as e:
+        return f"❌ ERROR: {str(e)}"
 
 
 @app.route("/chat", methods=["POST"])
