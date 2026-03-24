@@ -12,6 +12,7 @@ CORS(app)
 # Store user state (simple session)
 user_state = {}
 
+
 def save_lead(name, email):
     try:
         print("🚀 Attempting to save:", name, email)
@@ -66,7 +67,13 @@ def home():
 
 @app.route("/test")
 def test():
-    return "123456789"
+    print("🔥 TEST ROUTE HIT")
+
+    save_lead("Debug User", "debug@gmail.com")
+
+    print("🔥 AFTER SAVE_LEAD")
+
+    return "DONE"
 
 
 @app.route("/chat", methods=["POST"])
