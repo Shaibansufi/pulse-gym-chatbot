@@ -12,18 +12,16 @@ CORS(app)
 # Store user state (simple session)
 user_state = {}
 
-
 def save_lead(name, email):
     try:
-        print("🚨 FUNCTION CALLED")  # 👈
         print("🚀 Attempting to save:", name, email)
 
         creds_json = os.environ.get("GOOGLE_CREDENTIALS")
 
         if not creds_json:
-            raise Exception("Missing GOOGLE_CREDENTIALS")
+            raise Exception("❌ GOOGLE_CREDENTIALS missing")
 
-        print("✅ ENV Loaded")
+        print("✅ ENV loaded")
 
         creds_json = creds_json.replace('\n', '\\n')
         creds_dict = json.loads(creds_json)
@@ -31,35 +29,35 @@ def save_lead(name, email):
 
         print("✅ Credentials parsed")
 
+        import gspread
+        from google.oauth2.service_account import Credentials  # 🔥 NEW (better than oauth2client)
+
         scope = [
-            "https://spreadsheets.google.com/feeds",
+            "https://www.googleapis.com/auth/spreadsheets",
             "https://www.googleapis.com/auth/drive"
         ]
 
-        creds = ServiceAccountCredentials.from_json_keyfile_dict(creds_dict, scope)
+        creds = Credentials.from_service_account_info(creds_dict, scopes=scope)
         client = gspread.authorize(creds)
 
-        print("✅ Authorized gspread")
+        print("✅ Authorized client")
 
-        # 🔥 STEP 1: Open sheet
         spreadsheet = client.open_by_key("1a0INWDWyTGb1XXQcx4lYzCvO8tp8blX3bI8LcbR7dTA")
-        print("✅ Spreadsheet opened:", spreadsheet.title)
+        print("✅ Opened spreadsheet:", spreadsheet.title)
 
-        # 🔥 STEP 2: List all worksheets
-        worksheets = spreadsheet.worksheets()
-        print("📄 Available sheets:", [ws.title for ws in worksheets])
-
-        # 🔥 STEP 3: Use correct sheet
         sheet = spreadsheet.sheet1
         print("✅ Using sheet:", sheet.title)
 
-        # 🔥 STEP 4: Append
+        # 🔥 FORCE CHECK BEFORE WRITE
+        existing = sheet.get_all_values()
+        print("📄 Existing rows:", len(existing))
+
         sheet.append_row([name, email])
 
-        print("🎉 SUCCESS: Row added")
+        print("🎉 SUCCESS: Row appended")
 
     except Exception as e:
-        print("❌ ERROR:", str(e))
+        print("❌ FULL ERROR:", repr(e))  # 👈 VERY IMPORTANT
 
 @app.route("/")
 def home():
