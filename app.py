@@ -15,6 +15,7 @@ user_state = {}
 
 def save_lead(name, email):
     try:
+        print("🚨 FUNCTION CALLED")  # 👈
         print("🚀 Attempting to save:", name, email)
 
         creds_json = os.environ.get("GOOGLE_CREDENTIALS")
@@ -67,11 +68,13 @@ def home():
 
 @app.route("/test")
 def test():
-    try:
-        save_lead("Debug User", "debug@gmail.com")
-        return "✅ Test completed - check sheet"
-    except Exception as e:
-        return f"❌ Error: {str(e)}"
+    print("🔥 TEST ROUTE HIT")
+
+    save_lead("Debug User", "debug@gmail.com")
+
+    print("🔥 AFTER SAVE_LEAD")
+
+    return "DONE"
 
 
 @app.route("/chat", methods=["POST"])
