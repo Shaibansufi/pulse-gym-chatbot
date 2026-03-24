@@ -68,13 +68,7 @@ def home():
 
 @app.route("/test")
 def test():
-    print("🔥 TEST ROUTE HIT")
-
-    save_lead("Debug User", "debug@gmail.com")
-
-    print("🔥 AFTER SAVE_LEAD")
-
-    return "DONE"
+    return "123456789"
 
 
 @app.route("/chat", methods=["POST"])
